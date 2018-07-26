@@ -2,7 +2,8 @@ import * as actionTypes from '../constants/actionConstants.js';
 
 let intialData = {
   auth_url: '',
-  authentication: true
+  authentication: true,
+  data: []
 };
 
 export default function reducer(state = intialData, action) {
@@ -22,6 +23,11 @@ export default function reducer(state = intialData, action) {
         ...state,
         authentication: action.payload.error
       };
+    case actionTypes.GET_TWITTER_DATA:
+      return state = {
+        ...state,
+        data: action.payload.value
+      }
     default:
     return state;
   }

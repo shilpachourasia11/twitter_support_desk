@@ -6,6 +6,7 @@ const port = parseInt(process.env.PORT, 10) || 3000;
 app.set('port', port);
 
 const server = http.createServer(app);
+var io = require('socket.io')(server);
 
 
 db.connection.sync({ force: false})

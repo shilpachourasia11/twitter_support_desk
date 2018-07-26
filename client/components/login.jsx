@@ -66,7 +66,6 @@ class Login extends Component {
 
 	render () {
 		return(
-			<div >
         <form>
           <div className="group">
             <input type="text" onChange={(e)=> this.getDetails(e, 'email') }/><span className="highlight"></span><span className="bar"></span>
@@ -97,7 +96,6 @@ class Login extends Component {
             : null
           }
         </form>
-			</div>
 		);
 	}
 }

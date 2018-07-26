@@ -14,6 +14,14 @@ body {
   height: 100vh;
 }
 
+#container{
+	height: 100%;
+}
+
+.routerView{
+	height: inherit;
+}
+
 .cards {
 	background-color: #000000;
 }
@@ -264,5 +272,70 @@ footer img:focus , footer a:focus { outline: none; }
 .home {
 	padding: 100px;
 	text-align: center;
+}
 
+.home .loader{
+	font-size: 18px;
+  padding: 20px;
+}
+
+.greetings {
+	margin-top: 90px;
+	text-align: center;
+}
+
+.support-desk .all-chats{
+	height: calc(100vh - 120px);
+	overflow: auto;
+}
+
+
+.support-desk{
+	display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-areas:
+      "s11 s12";
+	height: 100%;
+  /*background: white;*/
+}
+
+.support-desk .colordiv{
+	background: #2C3E50;
+	height: 35px;
+	margin-bottom: 10px;
+}
+
+.tweet-label{
+	padding: 10px !important;
+	font-size: 15px !important;
+	width: 60%;
+}
+
+.speech-bubble {
+	position: relative;
+	background: #00aabb;
+	border-radius: .4em;
+	color: white;
+	padding: 10px;
+	max-width: 700px;
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 27px solid transparent;
+	border-right-color: #00aabb;
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -13.5px;
+	margin-left: -27px;
+}
+
+.form-custom input{
+	border-color: #2C3E50 !important;
+	height: 40px;
 }

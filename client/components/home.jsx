@@ -8,7 +8,7 @@ class Home extends Component {
   constructor(props) {
 		super(props);
     this.state = {
-
+      twitterProcess: false
     }
 	}
 
@@ -34,12 +34,14 @@ class Home extends Component {
       });
       this.props.router.push('/home');
     }
-
   }
 
   twitterLogin = () => {
     let data = JSON.parse(localStorage.getItem('login_data'));
     this.props.twitterLogin({id: data.value.id});
+    this.setState({
+      twitterProcess: true
+    });
   }
 
 	render () {
@@ -51,7 +53,12 @@ class Home extends Component {
             <Button bsStyle="primary" onClick={this.twitterLogin}  bsSize="large">
               Login with Twitter
             </Button>
-
+            <br/>
+            {
+              this.props.twitter.authentication === true && this.state.twitterProcess === true?
+              <p className='loader'>Loading...</p>
+              : null
+            }
 			</div>
 		);
 	}

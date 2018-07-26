@@ -56,3 +56,20 @@ export const twitterCallback = (data) => {
     });
   };
 }
+
+export const getTwitterData = (data) => {
+  return (dispatch) => {
+    const path = BASE_URL + '/getOrder';
+    axios({
+      method: 'post',
+      url: path,
+      data: data,
+    })
+    .then(response => {
+      dispatch(dataDispatch(response.data, action.GET_TWITTER_DATA));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  };
+}

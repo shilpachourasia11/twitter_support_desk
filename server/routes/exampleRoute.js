@@ -9,5 +9,6 @@ module.exports = function(app){
 	//app.get('/twitter_reverse', twitterController.connect)
 	app.post('/twitter', twitterController.callback)
 	// app.get('/twitter', twitterController.connect);
-	// app.get('/getOrder', twitterController.getOrder);
+	app.post('/getOrder', twitterController.getOrder);
+	app.post('/streamTweets', twitterController.streamTweets);
 };
