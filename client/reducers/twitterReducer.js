@@ -1,9 +1,12 @@
 import * as actionTypes from '../constants/actionConstants.js';
+import _ from 'lodash';
 
 let intialData = {
   auth_url: '',
   authentication: true,
-  data: []
+  data: [],
+  update: true,
+  message: ['No Notifications']
 };
 
 export default function reducer(state = intialData, action) {
@@ -28,6 +31,75 @@ export default function reducer(state = intialData, action) {
         ...state,
         data: action.payload.value
       }
+    case actionTypes.LIVE_DATA_TWITTER:
+      let newData = action.payload;
+      console.log(newData)
+      let chat = newData.chat;
+      let feedback = newData.feedback;
+      let complaint = newData.complaint;
+      let order = newData.order;
+
+      let allData = state.data;
+      let message = [];
+
+      if(chat.length !== 0){
+        chat.map((item, index)=>{
+          let exists = _.find(allData.chat, { id: item.id  });
+          if(exists !== undefined){
+            allData.chat.push(item);
+          }
+        })
+        message.push('You have new chat');
+      }
+      if(feedback.length !== 0){
+        feedback.map((item, index)=>{
+          let exists = _.find(allData.feedback, { id: item.id  });
+          if(exists !== undefined){
+            allData.feedback.push(item);
+          }
+        })
+        message.push('You have new feedback');
+      }
+      if(complaint.length !== 0){
+        complaint.map((item, index)=>{
+          let exists = _.find(allData.complaint, { id: item.id  });
+          if(exists !== undefined){
+            allData.complaint.push(item);
+          }
+        })
+        message.push('You have new complaint');
+
+      }
+      if(order.length !== 0){
+        order.map((item, index)=>{
+          let exists = _.find(allData.order, { id: item.id  });
+          if(exists !== undefined){
+            allData.order.push(item);
+          }
+        })
+        message.push('You have new order');
+      }
+
+      return state = {
+        ...state,
+        data: allData,
+        update: true,
+        message
+      };
+
+    case actionTypes.CLEAR_MESSAGE:
+      let messageToDel = action.payload;
+      let all = state.message;
+      let index = _.indexOf(all,messageToDel);
+
+      if(index !== -1){
+        all.splice(index, 1);
+      }
+      return state = {
+        ...state,
+        message: all
+      }
+
     default:
     return state;
   }

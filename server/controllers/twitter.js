@@ -14,7 +14,6 @@ var db=require('./../sqldb');
 var userID = '';
 
 var app = require('../app.js');
-var io = require('socket.io')(app);
 
 var twitter = new twitterAPI({
     consumerKey: secrets.twitter.api_key,
@@ -115,20 +114,25 @@ exports.getOrder = function(req, res) {
         }
         else{
           data.map((item, index)=>{
-            item.entities.hashtags.map((hash, index2)=>{
-              if(hash.text.includes(substringOrder)){
-                order.push(item);
-              }
-              else if(hash.text.includes(subStrFeedback)){
-                feedback.push(item);
-              }
-              else if(hash.text.includes(subStrCompliant)){
-                complaint.push(item);
-              }
-              else{
-                chat.push(item);
-              }
-            })
+            if(item.entities.hashtags.length === 0){
+              chat.push(item)
+            }
+            else{
+              item.entities.hashtags.map((hash, index2)=>{
+                if(hash.text.includes(substringOrder)){
+                  order.push(item);
+                }
+                else if(hash.text.includes(subStrFeedback)){
+                  feedback.push(item);
+                }
+                else if(hash.text.includes(subStrCompliant)){
+                  complaint.push(item);
+                }
+                else{
+                  chat.push(item);
+                }
+              })
+            }
           })
           res.send({
             error: false,
@@ -144,11 +148,10 @@ exports.getOrder = function(req, res) {
   })
 }
 
-exports.streamTweets = function(req,res) {
+exports.streamTweets = function(user, io) {
   let userDetail = db.user_detail;
-
   userDetail.findOne({ where: {
-    id: req.body.id,
+    id: user.id,
   }})
   .then((result)=>{
       let data = JSON.parse(result.dataValues.twitter_handle)
@@ -156,7 +159,7 @@ exports.streamTweets = function(req,res) {
       let accessTokenSecret = data.accessTokenSecret;
 
       let params = {
-        track: "#food"
+        track: user.screen_name
       }
 
       var client = new Twitter({
@@ -175,10 +178,15 @@ exports.streamTweets = function(req,res) {
       let subStrFeedback = 'feedback';
       let subStrCompliant = 'complaint';
 
-      var stream = client.stream('statuses/filter', {track: '@FoodBird7'});
+      var stream = client.stream('statuses/filter', params);
       stream.on('data', function(data) {
         console.log(data.entities)
-        data.entities.hashtags.map((hash, index2)=>{
+        if(data.entities.hashtags.length === 0){
+          chat.push(data)
+        }
+        else{
+          data.entities.hashtags.map((hash, index2)=>{
+            console.log(hash)
             if(hash.text.includes(substringOrder)){
               order.push(data);
             }
@@ -191,9 +199,10 @@ exports.streamTweets = function(req,res) {
             else{
               chat.push(data);
             }
-          })
+          });
+        }
 
-          io.sockets.emit('tweet', {
+          io.sockets.emit('tweet_notification', {
             order,
             feedback,
             complaint,

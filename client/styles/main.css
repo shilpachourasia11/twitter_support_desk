@@ -339,3 +339,16 @@ footer img:focus , footer a:focus { outline: none; }
 	border-color: #2C3E50 !important;
 	height: 40px;
 }
+
+.fixed-height-scroll{
+	overflow: auto;
+}
+
+.update{
+	background-color: purple !important;
+}
+
+.colordiv .btn-group{
+	position: absolute;
+	right: 60px;
+}

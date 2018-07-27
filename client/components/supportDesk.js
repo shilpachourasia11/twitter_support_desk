@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
-import { getTwitterData } from '../actions/twitter.js';
+import { getTwitterData, twitterLiveData, clearMessage } from '../actions/twitter.js';
 
-import { Label, FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
+import { Label, FormGroup, ControlLabel, FormControl, HelpBlock, Button, MenuItem, DropdownButton } from 'react-bootstrap';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 
 import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 
+import socketIOClient from 'socket.io-client'
+let endpoint = "http://172.16.16.208:3000";
+const socket = socketIOClient(endpoint)
 
 class SupportDesk extends Component {
   constructor(props) {
@@ -18,11 +21,13 @@ class SupportDesk extends Component {
       username: '',
       isVisible: false,
       tabType: 'order',
-      value: ''
+      value: '',
+      openNotification: ''
     }
 	}
 
   componentWillReceiveProps(nextProps){
+
   }
 
   componentDidMount(){
@@ -33,6 +38,14 @@ class SupportDesk extends Component {
     this.props.getTwitterData({
       id: userData.value.id
     });
+
+    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+
+    socket.emit('tweet_notification', {
+      id: userData.value.id,
+      screen_name
+    });
+
   }
 
   handleTextChange = () => {
@@ -48,7 +61,8 @@ class SupportDesk extends Component {
     this.setState({
       tabType: data
     });
-    console.log(data)
+    let message = 'You have new ' + data;
+    this.props.clearMessage(message);
   }
 
   getCards = (type) => {
@@ -75,14 +89,41 @@ class SupportDesk extends Component {
 
   sendReply = () => {
     let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+
+
+    // this emits an event to the socket (your server) with an argument of 'red'
+    // you can make the argument any color you would like, or any kind of data you want to send.
+    console.log("socket emit")
+
+    let data = {
+      screen_name,
+
+    }
+    socket.emit('tweet', 'red')
+    // socket.emit('change color', 'red', 'yellow') | you can have multiple arguments
+  }
+
+  openNotification = () => {
+    this.setState({
+      openNotification: !this.state.openNotification
+    })
   }
 
 	render () {
     let allCard = [];
+    //const socket = socketIOClient(this.state.endpoint)
+    socket.on('tweet', (col) => {
+      document.body.style.backgroundColor = col
+    });
+
+    socket.on('tweet_notification', (data) => {
+      this.props.twitterLiveData(data)
+    });
+
 		return(
 			<div className='support-desk'>
 
-        <div style={{background: '#2c3e50', color: '#FFF', width: '100%'}}>
+        <div className='fixed-height-scroll' style={{background: '#2c3e50', color: '#FFF', width: '100%'}}>
            <SideNav onItemSelection={this.select} highlightColor='#E91E63' highlightBgColor='#00bcd4' defaultSelected='order'>
                <Nav id='disabled'>
                    <NavIcon ><SvgIcon size={20} icon={ic_aspect_ratio}/></NavIcon>
@@ -149,7 +190,25 @@ class SupportDesk extends Component {
          </div>
 
         <div className="chats">
-          <div className='colordiv'></div>
+          <div className='colordiv'>
+            {
+              this.props.twitter.update ?
+              <DropdownButton
+                title={"Notification"}
+                bsStyle='warning'
+              >
+                {
+                  this.props.twitter.message.map((item,index)=>{
+                    return(
+                      <MenuItem eventKey="1">{item}</MenuItem>
+                    )
+                  })
+                }
+
+              </DropdownButton>
+              : null
+            }
+          </div>
           <div className='all-chats'>
           {
             this.getCards(this.state.tabType)
@@ -184,7 +243,9 @@ const mapStateToProps = (store) => {
 
 
 const mapDispatchToProps = {
-  getTwitterData
+  getTwitterData,
+  twitterLiveData,
+  clearMessage
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SupportDesk);

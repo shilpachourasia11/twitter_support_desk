@@ -11,7 +11,7 @@ import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 
 import store from './store.js';
 
-import socket from './socket'; 
+import registerServiceWorker from './registerServiceWorker'
 
 ReactDOM.render(
     <Provider store={store}>
@@ -25,3 +25,4 @@ ReactDOM.render(
     </Provider>,
   document.querySelector("#container")
 );
+registerServiceWorker();

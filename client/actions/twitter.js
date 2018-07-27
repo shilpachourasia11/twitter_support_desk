@@ -22,6 +22,20 @@ export const reset = () => {
   }
 }
 
+export const twitterLiveData = (data) => {
+  return {
+    type: action.LIVE_DATA_TWITTER,
+    payload: data
+  }
+}
+
+export const clearMessage = (message) => {
+  return {
+    type: action.CLEAR_MESSAGE,
+    payload: message
+  }
+}
+
 export const twitterLogin = (id) => {
   return (dispatch) => {
     const path = BASE_URL + '/auth_twitter';
