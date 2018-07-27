@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
-import { getTwitterData, twitterLiveData, clearMessage } from '../actions/twitter.js';
+import { getTwitterData, twitterLiveData, clearMessage, getReplies } from '../actions/twitter.js';
 
 import { Label, FormGroup, ControlLabel, FormControl, HelpBlock, Button, MenuItem, DropdownButton } from 'react-bootstrap';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
@@ -63,6 +63,21 @@ class SupportDesk extends Component {
     });
     let message = 'You have new ' + data;
     this.props.clearMessage(message);
+    var res = data.split("/");
+    if(res[1] !== undefined){
+      let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+      let Alltweet = this.props.twitter.data[res[0]];
+      let tweet = Alltweet[res[1]];
+      let serverObj = {
+        user_id: tweet.in_reply_to_user_id,
+        screen_name: screen_name,
+        id: (JSON.parse(localStorage.getItem('login_data'))).value.id
+      }
+      this.setState({
+        loadingConvo: true
+      })
+      this.props.getReplies(serverObj);
+    }
   }
 
   getCards = (type) => {
@@ -74,7 +89,6 @@ class SupportDesk extends Component {
     if(res[1] === undefined){
       return;
     }
-    console.log(data[res[1]])
 
     return (
       <label className='speech-bubble'>{data[res[1]].text}</label>
@@ -89,8 +103,6 @@ class SupportDesk extends Component {
 
   sendReply = () => {
     let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-
-
     // this emits an event to the socket (your server) with an argument of 'red'
     // you can make the argument any color you would like, or any kind of data you want to send.
     console.log("socket emit")
@@ -191,9 +203,7 @@ class SupportDesk extends Component {
 
         <div className="chats">
           <div className='colordiv'>
-            {
-              this.props.twitter.update ?
-              <DropdownButton
+            <DropdownButton
                 title={"Notification"}
                 bsStyle='warning'
               >
@@ -206,12 +216,21 @@ class SupportDesk extends Component {
                 }
 
               </DropdownButton>
-              : null
-            }
+              {
+                this.props.twitter.update ?
+                <Button style={{float: 'right'}} bsStyle='warning'>{this.props.twitter.message.length}</Button>
+                : null
+              }
+
           </div>
           <div className='all-chats'>
           {
             this.getCards(this.state.tabType)
+          }
+          {
+            this.state.loadingConvo ?
+            <p className='wait-text'>Please wait while the conversation is fetched...</p>
+            : null
           }
           </div>
           <Button onClick={this.sendReply} bsStyle="primary">Send</Button>
@@ -245,7 +264,8 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = {
   getTwitterData,
   twitterLiveData,
-  clearMessage
+  clearMessage,
+  getReplies
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SupportDesk);

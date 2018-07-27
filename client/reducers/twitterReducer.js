@@ -5,8 +5,9 @@ let intialData = {
   auth_url: '',
   authentication: true,
   data: [],
-  update: true,
-  message: ['No Notifications']
+  update: false,
+  message: ['No Notifications'],
+  replies: []
 };
 
 export default function reducer(state = intialData, action) {
@@ -91,15 +92,24 @@ export default function reducer(state = intialData, action) {
       let messageToDel = action.payload;
       let all = state.message;
       let index = _.indexOf(all,messageToDel);
-
+      let newUpdate = state.update;
       if(index !== -1){
         all.splice(index, 1);
       }
+
+      if(all.length === 0){
+        newUpdate = false
+      }
       return state = {
         ...state,
-        message: all
+        message: all,
+        update: newUpdate
       }
-
+    case actionTypes.GET_REPLIES:
+      return state = {
+        ...state,
+        replies: action.payload
+      }
     default:
     return state;
   }

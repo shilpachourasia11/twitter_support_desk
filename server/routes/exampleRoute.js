@@ -11,4 +11,5 @@ module.exports = function(app){
 	// app.get('/twitter', twitterController.connect);
 	app.post('/getOrder', twitterController.getOrder);
 	app.post('/streamTweets', twitterController.streamTweets);
+	app.post('/getReplies', twitterController.getReplies);
 };

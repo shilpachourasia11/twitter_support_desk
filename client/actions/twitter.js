@@ -36,6 +36,24 @@ export const clearMessage = (message) => {
   }
 }
 
+export const getReplies = (data) => {
+  return (dispatch) => {
+    const path = BASE_URL + '/getReplies';
+    axios({
+      method: 'post',
+      url: path,
+      data: data,
+    })
+    .then(response => {
+      dispatch(dataDispatch(response.data, action.GET_REPLIES));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  };
+}
+
+
 export const twitterLogin = (id) => {
   return (dispatch) => {
     const path = BASE_URL + '/auth_twitter';

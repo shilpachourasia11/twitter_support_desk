@@ -148,6 +148,48 @@ exports.getOrder = function(req, res) {
   })
 }
 
+exports.getReplies = function(req, res) {
+  let userDetail = db.user_detail;
+
+  userDetail.findOne({ where: {
+    id: '4',
+  }})
+  .then((result)=>{
+      let data = JSON.parse(result.dataValues.twitter_handle)
+      let accessToken = data.accessToken;
+      let accessTokenSecret = data.accessTokenSecret;
+      let params = {
+        screen_name: req.body.screen_name,
+        user_id: req.body.user_id
+      }
+
+      let order = [];
+      let feedback = [];
+      let complaint = [];
+      let chat = [];
+
+      let substringOrder = 'order';
+      let subStrFeedback = 'feedback';
+      let subStrCompliant = 'complaint';
+
+      twitter.getTimeline("user", params, accessToken, accessTokenSecret, function(error, data, response) {
+        if(error){
+          res.send({
+            error: true,
+            value: error
+          })
+        }
+        else{
+          console.log(data)
+          res.send({
+            error: false,
+            value: data
+          })
+        }
+      });
+  })
+}
+
 exports.streamTweets = function(user, io) {
   let userDetail = db.user_detail;
   userDetail.findOne({ where: {
