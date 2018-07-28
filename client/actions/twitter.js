@@ -36,6 +36,29 @@ export const clearMessage = (message) => {
   }
 }
 
+export const resetReplies = () => {
+  return {
+    type: action.RESET_REPLY_VAR
+  }
+}
+
+export const sendReply = (data) => {
+  return (dispatch) => {
+    const path = BASE_URL + '/sendReply';
+    axios({
+      method: 'post',
+      url: path,
+      data: data,
+    })
+    .then(response => {
+      dispatch(dataDispatch(response.data, action.SEND_REPLIES));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  };
+}
+
 export const getReplies = (data) => {
   return (dispatch) => {
     const path = BASE_URL + '/getReplies';

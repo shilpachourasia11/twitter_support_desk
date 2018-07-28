@@ -105,7 +105,7 @@ exports.getOrder = function(req, res) {
       let subStrFeedback = 'feedback';
       let subStrCompliant = 'complaint';
 
-      twitter.getTimeline("mentions", params, accessToken, accessTokenSecret, function(error, data, response) {
+      twitter.getTimeline("mentions_timeline", params, accessToken, accessTokenSecret, function(error, data, response) {
         if(error){
           res.send({
             error: true,
@@ -160,7 +160,6 @@ exports.getReplies = function(req, res) {
       let accessTokenSecret = data.accessTokenSecret;
       let params = {
         screen_name: req.body.screen_name,
-        user_id: req.body.user_id
       }
 
       let order = [];
@@ -258,5 +257,34 @@ exports.streamTweets = function(user, io) {
 
 
       //twitter.getStream("site", params, accessToken, accessTokenSecret, dataCallback, endcallback)
+  });
+}
+
+exports.sendTweets = function(req, res) {
+  let userDetail = db.user_detail;
+  userDetail.findOne({ where: {
+    id: req.body.id,
+  }})
+  .then((result)=>{
+      let data = JSON.parse(result.dataValues.twitter_handle)
+      let accessToken = data.accessToken;
+      let accessTokenSecret = data.accessTokenSecret;
+      let status = '@' + req.body.reply_screen_name + ' ' + req.body.text;
+
+      let params = {
+        status: status,
+        in_reply_to_status_id: req.body.reply_to
+      }
+      twitter.statuses("update", params, accessToken, accessTokenSecret, function(error, data, response) {
+              if (error) {
+                  // something went wrong
+              } else {
+                  res.send({
+                    error: false,
+                    value: 'posted'
+                  })
+              }
+          }
+      );
   });
 }

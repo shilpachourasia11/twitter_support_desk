@@ -7,7 +7,9 @@ let intialData = {
   data: [],
   update: false,
   message: ['No Notifications'],
-  replies: []
+  replies: [],
+  repliesFetched: false,
+  posted: false
 };
 
 export default function reducer(state = intialData, action) {
@@ -34,7 +36,6 @@ export default function reducer(state = intialData, action) {
       }
     case actionTypes.LIVE_DATA_TWITTER:
       let newData = action.payload;
-      console.log(newData)
       let chat = newData.chat;
       let feedback = newData.feedback;
       let complaint = newData.complaint;
@@ -108,7 +109,19 @@ export default function reducer(state = intialData, action) {
     case actionTypes.GET_REPLIES:
       return state = {
         ...state,
-        replies: action.payload
+        replies: action.payload,
+        repliesFetched: true,
+        posted: false
+      }
+    case actionTypes.RESET_REPLY_VAR:
+      return state = {
+        ...state,
+        repliesFetched: false
+      }
+    case actionTypes.SEND_REPLIES:
+      return state = {
+        ...state,
+        posted: true
       }
     default:
     return state;

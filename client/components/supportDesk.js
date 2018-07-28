@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
-import { getTwitterData, twitterLiveData, clearMessage, getReplies } from '../actions/twitter.js';
+import { getTwitterData, twitterLiveData, clearMessage, getReplies, resetReplies, sendReply } from '../actions/twitter.js';
 
 import { Label, FormGroup, ControlLabel, FormControl, HelpBlock, Button, MenuItem, DropdownButton } from 'react-bootstrap';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
@@ -10,7 +10,7 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 
 import socketIOClient from 'socket.io-client'
-let endpoint = "http://172.16.16.208:3000";
+let endpoint = "http://192.168.0.111:3000";
 const socket = socketIOClient(endpoint)
 
 class SupportDesk extends Component {
@@ -22,25 +22,50 @@ class SupportDesk extends Component {
       isVisible: false,
       tabType: 'order',
       value: '',
-      openNotification: ''
+      openNotification: '',
+      selectedTweet: null,
+      replies: [],
+      allReplies: []
     }
 	}
 
   componentWillReceiveProps(nextProps){
-
+    this.props = nextProps;
+    if(this.props.twitter.repliesFetched === true){
+      let all = this.props.twitter.replies.value;
+      let tweetId = this.state.selectedTweet.id;
+      let allReplies = [];
+      all.map((item, index)=>{
+        if(item.in_reply_to_status_id === tweetId){
+          allReplies.push(item);
+        }
+      })
+      this.setState({
+        replies: allReplies,
+        loadingConvo: false
+      })
+      this.props.resetReplies();
+    }
+    if(this.props.twitter.posted === true){
+      let serverObj = {
+        user_id: this.state.selectedTweet.in_reply_to_user_id,
+        screen_name: JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name,
+        id: (JSON.parse(localStorage.getItem('login_data'))).value.id
+      }
+      this.props.getReplies(serverObj);
+    }
   }
 
   componentDidMount(){
     let userData = JSON.parse(localStorage.getItem('login_data'));
+    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
     this.setState({
       username: userData.value.username
     });
     this.props.getTwitterData({
-      id: userData.value.id
+      id: userData.value.id,
+      screen_name
     });
-
-    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-
     socket.emit('tweet_notification', {
       id: userData.value.id,
       screen_name
@@ -48,8 +73,10 @@ class SupportDesk extends Component {
 
   }
 
-  handleTextChange = () => {
-
+  getChatText = (e) => {
+    this.setState({
+      value: e.target.value
+    })
   }
 
   updateModal(isVisible) {
@@ -74,13 +101,31 @@ class SupportDesk extends Component {
         id: (JSON.parse(localStorage.getItem('login_data'))).value.id
       }
       this.setState({
-        loadingConvo: true
+        loadingConvo: true,
+        selectedTweet: tweet,
+        replies: []
       })
       this.props.getReplies(serverObj);
     }
   }
 
-  getCards = (type) => {
+  getCards = (type, replies) => {
+    let classname = '';
+    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+    if(type === 'replies'){
+      let html = [];
+      replies.map((item,index)=>{
+        if(item.user.screen_name === screen_name){
+          classname = 'speech-bubble screen-name-reply';
+        }
+        else{
+          classname = 'speech-bubble';
+        }
+        html.push(<p><label className={classname}>{item.text}</label></p>)
+      })
+      return html;
+    }
+
     var res = type.split("/");
     if(this.props.twitter.data.length === 0){
       return;
@@ -90,29 +135,30 @@ class SupportDesk extends Component {
       return;
     }
 
+    if(data[res[1]].user.screen_name === screen_name){
+      classname = 'speech-bubble screen-name-reply';
+    }
+    else{
+      classname = 'speech-bubble';
+    }
     return (
-      <label className='speech-bubble'>{data[res[1]].text}</label>
+      <p><label className={classname}>{data[res[1]].text}</label></p>
     )
   }
 
-  getChatText = (e) => {
-    this.setState({
-      value: e.target.value
-    })
-  }
-
   sendReply = () => {
-    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-    // this emits an event to the socket (your server) with an argument of 'red'
-    // you can make the argument any color you would like, or any kind of data you want to send.
-    console.log("socket emit")
-
     let data = {
-      screen_name,
-
+      reply_to: this.state.selectedTweet.id_str,
+      id: (JSON.parse(localStorage.getItem('login_data'))).value.id,
+      reply_screen_name: this.state.selectedTweet.user.screen_name,
+      text: this.state.value
     }
-    socket.emit('tweet', 'red')
-    // socket.emit('change color', 'red', 'yellow') | you can have multiple arguments
+    let allReplies = this.state.allReplies;
+    allReplies.push(this.state.value);
+    this.setState({
+      allReplies
+    })
+    this.props.sendReply(data);
   }
 
   openNotification = () => {
@@ -134,7 +180,6 @@ class SupportDesk extends Component {
 
 		return(
 			<div className='support-desk'>
-
         <div className='fixed-height-scroll' style={{background: '#2c3e50', color: '#FFF', width: '100%'}}>
            <SideNav onItemSelection={this.select} highlightColor='#E91E63' highlightBgColor='#00bcd4' defaultSelected='order'>
                <Nav id='disabled'>
@@ -232,6 +277,11 @@ class SupportDesk extends Component {
             <p className='wait-text'>Please wait while the conversation is fetched...</p>
             : null
           }
+          {
+            this.state.replies.length === 0 ?
+            null
+            : this.getCards('replies',this.state.replies)
+          }
           </div>
           <Button onClick={this.sendReply} bsStyle="primary">Send</Button>
            <FormGroup
@@ -265,7 +315,9 @@ const mapDispatchToProps = {
   getTwitterData,
   twitterLiveData,
   clearMessage,
-  getReplies
+  getReplies,
+  resetReplies,
+  sendReply
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SupportDesk);

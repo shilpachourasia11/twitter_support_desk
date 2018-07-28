@@ -328,7 +328,7 @@ footer img:focus , footer a:focus { outline: none; }
 	width: 0;
 	height: 0;
 	border: 27px solid transparent;
-	border-right-color: #00aabb;
+	/*border-right-color: #00aabb;*/
 	border-left: 0;
 	border-bottom: 0;
 	margin-top: -13.5px;
@@ -356,4 +356,9 @@ footer img:focus , footer a:focus { outline: none; }
 .wait-text{
 	padding: 100px;
 	font-size: 20px;
+}
+
+.screen-name-reply{
+	background: #EC9821;
+	border-right-color: #EC9821;
 }
