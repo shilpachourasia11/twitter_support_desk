@@ -3,7 +3,6 @@ const http = require('http');
 let db=require('./sqldb')
 let config = require('./config/environment');
 const port = config.port;
-console.log(config)
 app.set('port', port);
 
 const server = http.createServer(app);
