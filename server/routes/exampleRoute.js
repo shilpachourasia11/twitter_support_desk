@@ -2,15 +2,13 @@
 let twitterController = require('../controllers/twitter');
 let loginController = require('../controllers/login');
 const express = require('express');
-import path from 'path';
+// import {path} from 'path';
 
 module.exports = function(app){
-	if (process.env.NODE_ENV === 'production') {
-		app.use(express.static('public/'));
-	}
-	app.get('*', (request, response) => {
-		response.sendFile(path.join(__dirname, 'public/', 'index.html'));
-	});
+	 // Handle React routing, return all requests to React app
+	 // app.get('*', function(req, res) {
+	 //     res.sendFile(path.join(dist));
+	 // });
 
 	app.post('/user/login', loginController.login);
 	app.post('/user/signup', loginController.signUp);

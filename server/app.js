@@ -15,6 +15,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger('dev'));
+app.use(express.static('dist'));
 
 var normalizedPath = require("path").join(__dirname, "routes");
 

@@ -56,20 +56,39 @@ class SupportDesk extends Component {
     }
   }
 
+  componentWillMount(){
+    let userData = JSON.parse(localStorage.getItem('login_data'));
+    if(userData !== null && userData !== undefined){
+      //
+    }
+    else{
+      this.props.router.push('/');
+      return
+    }
+  }
+
   componentDidMount(){
     let userData = JSON.parse(localStorage.getItem('login_data'));
-    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-    this.setState({
-      username: userData.value.username
-    });
-    this.props.getTwitterData({
-      id: userData.value.id,
-      screen_name
-    });
-    socket.emit('tweet_notification', {
-      id: userData.value.id,
-      screen_name
-    });
+    if(userData !== null && userData !== undefined){
+      let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+      this.setState({
+        username: userData.value.username
+      });
+      this.props.getTwitterData({
+        id: userData.value.id,
+        screen_name
+      });
+      socket.emit('tweet_notification', {
+        id: userData.value.id,
+        screen_name
+      });
+    }
+    else{
+      this.props.router.push('/');
+      return
+    }
+
+
 
   }
 
@@ -110,20 +129,27 @@ class SupportDesk extends Component {
   }
 
   getCards = (type, replies) => {
-    let classname = '';
-    let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-    if(type === 'replies'){
-      let html = [];
-      replies.map((item,index)=>{
-        if(item.user.screen_name === screen_name){
-          classname = 'speech-bubble screen-name-reply';
-        }
-        else{
-          classname = 'speech-bubble';
-        }
-        html.push(<p><label className={classname}>{item.text}</label></p>)
-      })
-      return html;
+    let userdetails = JSON.parse(localStorage.getItem('login_data'));
+    if(userdetails !== null && userdetails !== undefined){
+      let classname = '';
+      let screen_name =  JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+      if(type === 'replies'){
+        let html = [];
+        replies.map((item,index)=>{
+          if(item.user.screen_name === screen_name){
+            classname = 'speech-bubble screen-name-reply';
+          }
+          else{
+            classname = 'speech-bubble';
+          }
+          html.push(<p><label className={classname}>{item.text}</label></p>)
+        })
+        return html;
+    }
+    else{
+      return
+    }
+
     }
 
     var res = type.split("/");
