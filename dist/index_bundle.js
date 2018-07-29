@@ -28531,7 +28531,7 @@ var SupportDesk = function (_Component) {
       _this.props.clearMessage(message);
       var res = data.split("/");
       if (res[1] !== undefined) {
-        var _screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+        var _screen_name = JSON.parse(localStorage.getItem('login_data')).value.twitter_handle.data.screen_name;
         var Alltweet = _this.props.twitter.data[res[0]];
         var tweet = Alltweet[res[1]];
         var serverObj = {
@@ -28552,7 +28552,7 @@ var SupportDesk = function (_Component) {
       var userdetails = JSON.parse(localStorage.getItem('login_data'));
       if (userdetails !== null && userdetails !== undefined) {
         var _classname = '';
-        var _screen_name2 = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+        var _screen_name2 = JSON.parse(localStorage.getItem('login_data')).value.twitter_handle.data.screen_name;
         if (type === 'replies') {
           var html = [];
           replies.map(function (item, index) {
@@ -28681,7 +28681,7 @@ var SupportDesk = function (_Component) {
     value: function componentDidMount() {
       var userData = JSON.parse(localStorage.getItem('login_data'));
       if (userData !== null && userData !== undefined) {
-        var _screen_name3 = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+        var _screen_name3 = JSON.parse(localStorage.getItem('login_data')).value.twitter_handle.data.screen_name;
         this.setState({
           username: userData.value.username
         });
