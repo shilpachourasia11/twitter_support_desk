@@ -2,13 +2,8 @@
 let twitterController = require('../controllers/twitter');
 let loginController = require('../controllers/login');
 const express = require('express');
-// import {path} from 'path';
 
 module.exports = function(app){
-	 // Handle React routing, return all requests to React app
-	 // app.get('*', function(req, res) {
-	 //     res.sendFile(path.join(dist));
-	 // });
 
 	app.post('/user/login', loginController.login);
 	app.post('/user/signup', loginController.signUp);

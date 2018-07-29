@@ -17,6 +17,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger('dev'));
 app.use(express.static('dist'));
 
+if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static('dist'));
+
+    // Handle React routing, return all requests to React app
+    // app.get('*', function(req, res) {
+    //     res.sendFile(path.join(dist));
+    // });
+}
+
 var normalizedPath = require("path").join(__dirname, "routes");
 
 require("fs").readdirSync(normalizedPath).forEach(function(file) {
