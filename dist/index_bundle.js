@@ -28357,7 +28357,6 @@ var Login = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var userData = JSON.parse(localStorage.getItem('login_data'));
-      console.log(userData);
       if (userData !== null && userData !== undefined) {
         if (userData.logged_in === true) {
           this.props.router.push('/home');
@@ -29079,7 +29078,7 @@ var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //import logger from 'redux-logger'
-var middleware = (0, _redux.applyMiddleware)((0, _reduxPromiseMiddleware2.default)(), _reduxThunk2.default, (0, _reduxLogger.createLogger)());
+var middleware = (0, _redux.applyMiddleware)((0, _reduxPromiseMiddleware2.default)(), _reduxThunk2.default);
 
 exports.default = (0, _redux.createStore)((0, _redux.combineReducers)({
     loginReducer: _loginReducer2.default,
@@ -30230,8 +30229,8 @@ _reactDom2.default.render(_react2.default.createElement(
       _reactRouter.Route,
       { path: "/", component: _App2.default },
       _react2.default.createElement(_reactRouter.IndexRoute, { component: _login2.default }),
-      _react2.default.createElement(_reactRouter.Route, { exact: true, path: "/home", component: _home2.default }),
-      _react2.default.createElement(_reactRouter.Route, { exact: true, path: "/support_desk", component: _supportDesk2.default })
+      _react2.default.createElement(_reactRouter.Route, { path: "/home", component: _home2.default }),
+      _react2.default.createElement(_reactRouter.Route, { path: "/support_desk", component: _supportDesk2.default })
     )
   )
 ), document.querySelector("#container"));

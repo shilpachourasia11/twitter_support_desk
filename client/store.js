@@ -11,8 +11,7 @@ import thunk from 'redux-thunk';
 
 const middleware = applyMiddleware(
     promise(),
-    thunk,
-    createLogger()
+    thunk
 );
 
 export default createStore(

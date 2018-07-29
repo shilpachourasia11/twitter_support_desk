@@ -18,8 +18,8 @@ ReactDOM.render(
       <Router history={browserHistory}>
         <Route path="/" component={App}>
           <IndexRoute component={Login}/>
-          <Route exact path="/home" component={Home}/>
-          <Route exact path='/support_desk' component={SupportDesk}/>
+          <Route path="/home" component={Home}/>
+          <Route path='/support_desk' component={SupportDesk}/>
         </Route>
       </Router>
     </Provider>,
