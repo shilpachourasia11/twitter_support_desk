@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "client": "webpack-dev-server",
-    "server": "nodemon server/server.js"
+    "server": "nodemon server/server.js",
+    "start": "node server/server.js"
   },
   "author": "Shilpa Chourasia",
   "license": "ISC",
