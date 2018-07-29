@@ -4,7 +4,6 @@
   "description": "Twitter help desk",
   "main": "index.jsx",
   "scripts": {
-    "start": "node index.js",
     "build": "webpack",
     "client": "webpack-dev-server",
     "server": "nodemon server/server.js"
