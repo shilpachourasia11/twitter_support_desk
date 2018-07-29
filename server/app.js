@@ -1,3 +1,9 @@
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const app = express();
+let env = process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
 const path  = require('path');
 
 app.use(function(req, res, next) {
@@ -22,3 +28,12 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, '../dist', 'index.html'));
     });
 }
+
+var normalizedPath = require("path").join(__dirname, "routes");
+
+require("fs").readdirSync(normalizedPath).forEach(function(file) {
+  require("./routes/" + file)(app);
+});
+
+
+module.exports = app;
