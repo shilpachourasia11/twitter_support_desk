@@ -10,7 +10,7 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 
 import socketIOClient from 'socket.io-client'
-let endpoint = "http://192.168.0.111:3000";
+let endpoint = "https://stark-anchorage-82178.herokuapp.com";
 const socket = socketIOClient(endpoint)
 
 class SupportDesk extends Component {

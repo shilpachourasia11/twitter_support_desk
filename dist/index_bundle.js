@@ -14941,7 +14941,7 @@ var getTwitterData = exports.getTwitterData = function getTwitterData(data) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var BASE_URL = exports.BASE_URL = 'http://localhost:3000';
+var BASE_URL = exports.BASE_URL = 'https://stark-anchorage-82178.herokuapp.com/';
 
 /***/ }),
 /* 171 */
@@ -28357,7 +28357,8 @@ var Login = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var userData = JSON.parse(localStorage.getItem('login_data'));
-      if (userData !== null | userData !== undefined) {
+      console.log(userData);
+      if (userData !== null && userData !== undefined) {
         if (userData.logged_in === true) {
           this.props.router.push('/home');
         }
@@ -28531,12 +28532,12 @@ var SupportDesk = function (_Component) {
       _this.props.clearMessage(message);
       var res = data.split("/");
       if (res[1] !== undefined) {
-        var screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+        var _screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
         var Alltweet = _this.props.twitter.data[res[0]];
         var tweet = Alltweet[res[1]];
         var serverObj = {
           user_id: tweet.in_reply_to_user_id,
-          screen_name: screen_name,
+          screen_name: _screen_name,
           id: JSON.parse(localStorage.getItem('login_data')).value.id
         };
         _this.setState({
@@ -28549,27 +28550,32 @@ var SupportDesk = function (_Component) {
     };
 
     _this.getCards = function (type, replies) {
-      var classname = '';
-      var screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-      if (type === 'replies') {
-        var html = [];
-        replies.map(function (item, index) {
-          if (item.user.screen_name === screen_name) {
-            classname = 'speech-bubble screen-name-reply';
-          } else {
-            classname = 'speech-bubble';
-          }
-          html.push(_react2.default.createElement(
-            'p',
-            null,
-            _react2.default.createElement(
-              'label',
-              { className: classname },
-              item.text
-            )
-          ));
-        });
-        return html;
+      var userdetails = JSON.parse(localStorage.getItem('login_data'));
+      if (userdetails !== null && userdetails !== undefined) {
+        var _classname = '';
+        var _screen_name2 = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+        if (type === 'replies') {
+          var html = [];
+          replies.map(function (item, index) {
+            if (item.user.screen_name === _screen_name2) {
+              _classname = 'speech-bubble screen-name-reply';
+            } else {
+              _classname = 'speech-bubble';
+            }
+            html.push(_react2.default.createElement(
+              'p',
+              null,
+              _react2.default.createElement(
+                'label',
+                { className: _classname },
+                item.text
+              )
+            ));
+          });
+          return html;
+        } else {
+          return;
+        }
       }
 
       var res = type.split("/");
@@ -28661,21 +28667,37 @@ var SupportDesk = function (_Component) {
       }
     }
   }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var userData = JSON.parse(localStorage.getItem('login_data'));
+      if (userData !== null && userData !== undefined) {
+        //
+      } else {
+        this.props.router.push('/');
+        return;
+      }
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var userData = JSON.parse(localStorage.getItem('login_data'));
-      var screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
-      this.setState({
-        username: userData.value.username
-      });
-      this.props.getTwitterData({
-        id: userData.value.id,
-        screen_name: screen_name
-      });
-      socket.emit('tweet_notification', {
-        id: userData.value.id,
-        screen_name: screen_name
-      });
+      if (userData !== null && userData !== undefined) {
+        var _screen_name3 = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+        this.setState({
+          username: userData.value.username
+        });
+        this.props.getTwitterData({
+          id: userData.value.id,
+          screen_name: _screen_name3
+        });
+        socket.emit('tweet_notification', {
+          id: userData.value.id,
+          screen_name: _screen_name3
+        });
+      } else {
+        this.props.router.push('/');
+        return;
+      }
     }
   }, {
     key: 'updateModal',
