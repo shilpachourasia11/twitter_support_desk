@@ -3,6 +3,13 @@ let twitterController = require('../controllers/twitter');
 let loginController = require('../controllers/login');
 
 module.exports = function(app){
+	if (process.env.NODE_ENV === 'production') {
+		app.use(express.static('public/'));
+	}
+	app.get('*', (request, response) => {
+		response.sendFile(path.join(__dirname, 'public/', 'index.html'));
+	});
+
 	app.post('/user/login', loginController.login);
 	app.post('/user/signup', loginController.signUp);
 	app.post('/auth_twitter', twitterController.connect)
