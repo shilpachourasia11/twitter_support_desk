@@ -17,6 +17,6 @@ module.exports = {
     // id: '1021635598921035776',
     // token: '1021635598921035776-zu4u8UAytlGIMrrfFjV6CBumpEykKe',
     // token_secret_key: 'EyCwi0EwfdPKON2HdViK7T0YWIcnj218ahDX4Z9Oj1VD2',
-    callback: 'http://localhost:8080/home'
+    callback: process.env.NODE_ENV === 'development' ? 'http://localhost:8080/home' : null
   }
 };

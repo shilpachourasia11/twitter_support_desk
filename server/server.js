@@ -1,8 +1,9 @@
 const app = require('./app.js');
 const http = require('http');
 let db=require('./sqldb')
-const port = parseInt(process.env.PORT, 10) || 3000;
-
+let config = require('./config/environment');
+const port = config.port;
+console.log(config)
 app.set('port', port);
 
 const server = http.createServer(app);

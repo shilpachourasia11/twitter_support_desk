@@ -14,8 +14,9 @@ class Login extends Component {
 	}
 
   componentDidMount(){
-    if(this.props.loginReducer.data !== undefined){
-      if(this.props.loginReducer.data.logged_in){
+    let userData = JSON.parse(localStorage.getItem('login_data'));
+    if(userData !== null | userData !== undefined){
+      if(userData.logged_in === true){
         this.props.router.push('/home');
       }
     }

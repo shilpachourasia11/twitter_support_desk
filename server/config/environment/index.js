@@ -13,9 +13,9 @@ function requiredProcessEnv(name) {
 let all = {
   env: process.env.NODE_ENV,
   // Root path of server
-  root: path.normalize(__dirname + '/../../..'),
+  root: path.normalize(__dirname + '/../../../server'),
   // Server port
-  port: process.env.PORT || 3001,
+  port: process.env.PORT || 3000,
 };
 console.log(process.env.NODE_ENV)
 // Export the config object based on the NODE_ENV
