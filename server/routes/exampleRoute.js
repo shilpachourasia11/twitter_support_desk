@@ -2,7 +2,7 @@
 let twitterController = require('../controllers/twitter');
 let loginController = require('../controllers/login');
 const express = require('express');
-import path from 'path'
+import path from 'path';
 
 module.exports = function(app){
 	if (process.env.NODE_ENV === 'production') {
