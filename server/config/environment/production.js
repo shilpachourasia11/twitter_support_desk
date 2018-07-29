@@ -3,7 +3,7 @@
 // =================================
 module.exports = {
   sequelize: {
-      uri:  process.env.SEQUELIZE_URI ||'postgres://postgres:cronj123@192.168.1.223:5432/sms',
+      uri:  'postgres://lwozoamkfudbwv:4616538fd1f716a17d284dce879009e1e0301b1df917ceb999c2219d962a9bb8@ec2-23-21-216-174.compute-1.amazonaws.com:5432/d605knddomk6qm',
       options: {
         logging: false,
         dialect: 'postgres',
