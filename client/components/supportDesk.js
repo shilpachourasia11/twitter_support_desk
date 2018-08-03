@@ -10,7 +10,9 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 
 import socketIOClient from 'socket.io-client'
-let endpoint = 'https://stark-anchorage-82178.herokuapp.com';
+import { END_POINT } from '../constants/config.js';
+console.log(END_POINT)
+let endpoint = END_POINT;
 const socket = socketIOClient(endpoint)
 
 class SupportDesk extends Component {
@@ -70,7 +72,8 @@ class SupportDesk extends Component {
   componentDidMount(){
     let userData = JSON.parse(localStorage.getItem('login_data'));
     if(userData !== null && userData !== undefined){
-      let screen_name = JSON.parse(localStorage.getItem('login_data')).value.twitter_handle.data.screen_name
+      let screen_name = JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+
       this.setState({
         username: userData.value.username
       });
@@ -111,7 +114,8 @@ class SupportDesk extends Component {
     this.props.clearMessage(message);
     var res = data.split("/");
     if(res[1] !== undefined){
-      let screen_name = z
+      let screen_name =  JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+      
       let Alltweet = this.props.twitter.data[res[0]];
       let tweet = Alltweet[res[1]];
       let serverObj = {
@@ -132,7 +136,8 @@ class SupportDesk extends Component {
     let userdetails = JSON.parse(localStorage.getItem('login_data'));
     if(userdetails !== null && userdetails !== undefined){
       let classname = '';
-      let screen_name =  JSON.parse(localStorage.getItem('login_data')).value.twitter_handle.data.screen_name;
+      let screen_name =  JSON.parse(JSON.parse(localStorage.getItem('login_data')).value.twitter_handle).data.screen_name;
+
       if(type === 'replies'){
         let html = [];
         replies.map((item,index)=>{
