@@ -111,7 +111,7 @@ class SupportDesk extends Component {
     this.props.clearMessage(message);
     var res = data.split("/");
     if(res[1] !== undefined){
-      let screen_name = JSON.parse(localStorage.getItem('login_data')).value.twitter_handle.data.screen_name
+      let screen_name = z
       let Alltweet = this.props.twitter.data[res[0]];
       let tweet = Alltweet[res[1]];
       let serverObj = {
